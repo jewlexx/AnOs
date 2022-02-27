@@ -1,1 +1,0 @@
-cargo build --target x86_64-anos.json --release
