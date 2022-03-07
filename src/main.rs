@@ -13,9 +13,11 @@ fn panic(info: &PanicInfo) -> ! {
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-    println!("Hello World!");
+    let mut x = 0;
 
     loop {
-        continue;
+        clear!();
+        x += 1;
+        print!("{}", x);
     }
 }

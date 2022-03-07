@@ -61,10 +61,23 @@ macro_rules! println {
     ($($arg:tt)*) => ($crate::print!("{}\n", format_args!($($arg)*)));
 }
 
+#[macro_export]
+macro_rules! clear {
+    () => {
+        $crate::vga_buffer::_clear_screen()
+    };
+}
+
 #[doc(hidden)]
 pub fn _print(args: fmt::Arguments) {
     use core::fmt::Write;
     WRITER.lock().write_fmt(args).unwrap();
+}
+
+#[doc(hidden)]
+pub fn _clear_screen() {
+    use core::fmt::Write;
+    WRITER.lock().clear_screen();
 }
 
 pub struct Writer {
@@ -111,6 +124,14 @@ impl Writer {
                 _ => self.write_byte(0xfe),
             }
         }
+    }
+
+    fn clear_screen(&mut self) {
+        self.clear_row(0);
+        for row in 1..BUFFER_HEIGHT {
+            self.clear_row(row);
+        }
+        self.column_position = 0;
     }
 
     fn new_line(&mut self) {
